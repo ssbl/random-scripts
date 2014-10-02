@@ -92,8 +92,8 @@ def comp_move(token):
 
     # Make winning move
     for x in moves:
-        if move_set: break
-
+        if move_set:
+            break
         board_copy = board[:]
         board_copy[x] = token
         if end_game(token, board_copy):
