@@ -87,13 +87,12 @@ def player_move(token):
 
 def comp_move(token):
     moves = valid_moves()
+    if not moves: return
     pl_token = 'O' if token == 'X' else 'X'
     move_set = False
 
     # Make winning move
     for x in moves:
-        if move_set:
-            break
         board_copy = board[:]
         board_copy[x] = token
         if end_game(token, board_copy):
@@ -103,6 +102,8 @@ def comp_move(token):
 
     # Stop player from winning
     for x in moves:
+        if move_set:
+            break
         board_copy = board[:]
         board_copy[x] = pl_token
         if end_game(pl_token, board_copy):
@@ -112,7 +113,7 @@ def comp_move(token):
 
     # Nothing interesting
     if not move_set:
-        board[moves[random.randrange(0, len(moves)-1)]] = token
+        board[moves[random.randrange(0, len(moves))]] = token
 
 if __name__ == '__main__':
     # Game starts
