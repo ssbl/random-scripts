@@ -2,6 +2,7 @@
 # Basic tic-tac-toe game
 
 import random
+from operator import itemgetter
 
 board = ['-'] * 9
 
@@ -18,8 +19,12 @@ def full():
         return False
     else:
         return True
-        
+
 def is_valid(move):
+    try:
+        move = int(move)
+    except:
+        return False
     if move > 8:
         return False
     elif board[move] != '-':
@@ -28,28 +33,31 @@ def is_valid(move):
         return True
 
 def end_game(token, board):
-    if board[0] == board[1] == board[2] == token:
+    f = lambda x, y, z: itemgetter(x, y, z)(board)
+    if all(x == token for x in f(0, 1, 2)):
         return True
-    elif board[3] == board[4] == board[5] == token:
+    elif all(x == token for x in f(3, 4, 5)):
         return True
-    elif board[6] == board[7] == board[8] == token:
+    elif all(x == token for x in f(6, 7, 8)):
         return True
-    elif board[0] == board[3] == board[6] == token:
+    elif all(x == token for x in f(0, 3, 6)):
         return True
-    elif board[1] == board[4] == board[7] == token:
+    elif all(x == token for x in f(1, 4, 7)):
         return True
-    elif board[2] == board[5] == board[8] == token:
+    elif all(x == token for x in f(2, 5, 8)):
         return True
-    elif board[0] == board[4] == board[8] == token:
+    elif all(x == token for x in f(0, 4, 8)):
         return True
-    elif board[2] == board[4] == board[6] == token:
+    elif all(x == token for x in f(2, 4, 6)):
         return True
     else:
         return False
-    
+
 def first_move(comp_token, player_token):
-    if random.randint(0,1): return comp_token, player_token
-    else: return player_token, comp_token
+    if random.randint(0, 1):
+        return comp_token, player_token
+    else:
+        return player_token, comp_token
 
 def set_characters():
     token = raw_input('Your token: ')
@@ -62,7 +70,7 @@ def set_characters():
     return token, cp_token
 
 def play_again(choice):
-    if choice[0] == 'y' or choice[0] == 'Y':
+    if choice.startswith(('y', 'Y')):
         for i in range(9):
             board[i] = '-'
         return True
@@ -71,17 +79,28 @@ def play_again(choice):
         return False
 
 def player_move(token):
-    pos = int(raw_input('Your move: '))
-
+    pos = raw_input('Your move: ')
     while not is_valid(pos):
-        pos = int(raw_input('Please enter a valid move: '))
+        pos = raw_input('Please enter a valid move: ')
+    pos = int(pos)
     board[pos] = token
-    
+
 def comp_move(token):
     moves = valid_moves()
     pl_token = 'O' if token == 'X' else 'X'
     move_set = False
-    
+
+    # Make winning move
+    for x in moves:
+        if move_set: break
+
+        board_copy = board[:]
+        board_copy[x] = token
+        if end_game(token, board_copy):
+            board[x] = token
+            move_set = True
+            break
+
     # Stop player from winning
     for x in moves:
         board_copy = board[:]
@@ -90,21 +109,10 @@ def comp_move(token):
             board[x] = token
             move_set = True
             break
-        
-    # Make winning move
-    for x in moves:
-        if move_set: break
-        
-        board_copy = board[:]
-        board_copy[x] = token
-        if end_game(token, board_copy):
-            board[x] = token
-            move_set = True
-            break
 
     # Nothing interesting
     if not move_set:
-        board[moves[random.randrange(0,len(moves)-1)]] = token
+        board[moves[random.randrange(0, len(moves)-1)]] = token
 
 if __name__ == '__main__':
     # Game starts
@@ -116,8 +124,9 @@ if __name__ == '__main__':
         first, second = first_move(comp_token, player_token)
         if (first, second) == (player_token, comp_token):
             print 'You play first.'
-        else: print 'Computer plays first.'
-            
+        else:
+            print 'Computer plays first.'
+
         while playing:
             if first == player_token:
                 player_move(player_token)
@@ -130,10 +139,10 @@ if __name__ == '__main__':
                     print 'You win!'
                     printBoard()
                 else: print 'Computer wins!'
-                
+
                 playing = False
                 continue
-            
+
             if second == comp_token:
                 comp_move(comp_token)
                 printBoard()
@@ -148,7 +157,7 @@ if __name__ == '__main__':
 
                 playing = False
                 continue
-                
+
             if full():
                 playing = False
 
