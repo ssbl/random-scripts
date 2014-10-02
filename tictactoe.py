@@ -79,6 +79,8 @@ def play_again(choice):
         return False
 
 def player_move(token):
+    if not valid_moves():
+        return
     pos = raw_input('Your move: ')
     while not is_valid(pos):
         pos = raw_input('Please enter a valid move: ')
