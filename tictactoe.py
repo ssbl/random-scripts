@@ -6,9 +6,14 @@ from operator import itemgetter
 
 board = ['-'] * 9
 
-def printBoard():
-    for i in range(0,9,3):
-        print board[i], board[i+1], board[i+2]
+def printBoard(indices=False):
+    for i in range(0, 9, 3):
+        b = "{0} {1} {2}".format(board[i], board[i+1], board[i+2])
+        if indices:
+            i = "{0} {1} {2}".format(i, i + 1, i + 2)
+            print b, i.rjust(20)
+        else:
+            print b
 
 def valid_moves():
     moves = [i for i in range(9) if board[i] == '-']
@@ -135,7 +140,7 @@ if __name__ == '__main__':
                 player_move(player_token)
             else:
                 comp_move(comp_token)
-                printBoard()
+                printBoard(indices=True)
 
             if end_game(first, board):
                 if first == player_token:
@@ -148,7 +153,7 @@ if __name__ == '__main__':
 
             if second == comp_token:
                 comp_move(comp_token)
-                printBoard()
+                printBoard(indices=True)
             else:
                 player_move(player_token)
 
