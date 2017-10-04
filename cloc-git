@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+REPONAME=temp-cloc-repo
+
+if [ $# -ne 1 ]
+then
+    echo "usage: cloc-git <repository-url>" && exit 1
+fi
+
+git clone --depth=1 "$1" "$REPONAME" &&
+cloc "$REPONAME" &&
+rm -rf "$REPONAME"
